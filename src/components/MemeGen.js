@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 
 class MemeGen extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      memeData: {},
+      memeData: [],
+      topText: this.props.topText,
+      bottomText: this.props.bottomText,
     };
   }
 
@@ -20,16 +22,42 @@ class MemeGen extends Component {
         this.setState(() => {
           return {
             memeData: data.data.memes,
+            topText: this.props.topText,
+            bottomText: this.props.bottomText,
           };
         });
-        console.log(this.state.memeData);
       });
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.topText !== prevProps.topText ||
+      this.props.bottomText !== prevProps.bottomText
+    ) {
+      this.setState((prevState) => {
+        return {
+          memeData: prevState.memeData,
+          topText: this.props.topText,
+          bottomText: this.props.bottomText,
+        };
+      });
+    }
+  }
+
   render() {
+    const mappedMemeData = this.state.memeData.map((item) => {
+      return item.url;
+    });
+    const url = mappedMemeData[1];
     return (
-      <div>
-        <h2>Main content</h2>
+      <div className="container">
+        <div
+          className="img-container"
+          style={{ backgroundImage: `url(${url})` }}
+        >
+          <div className="top-text">{this.state.topText}</div>
+          <div className="bottom-text">{this.state.bottomText}</div>
+        </div>
       </div>
     );
   }
